@@ -1,6 +1,16 @@
 const db = require('../database/models');
+const CollectionEntriesService = require('./collectionEntries.service');
 
 const createContentType = async (contentTypeDetails) => {
+  // throw error if content type already exists
+  const gotContentType = await db.ContentType.findOne({
+    where: {
+      name: contentTypeDetails.name,
+    },
+  });
+  if (gotContentType) {
+    throw new Error('ContentType already exists');
+  }
   const createdContentType = await db.ContentType.create({
     name: contentTypeDetails.name,
     email: contentTypeDetails.email,
