@@ -52,10 +52,40 @@ const updateFieldName = async (contentTypeId, oldFieldName, newFieldName) => {
   return updatedCollectionEntry;
 };
 
+const addValuesToFieldsInCollectionEntry = async (
+  collectionEntryId,
+  fieldDetails
+) => {
+  // find collectionEntry
+  const gotCollectionEntry = await db.CollectionEntries.findOne({
+    where: {
+      id: collectionEntryId,
+    },
+  });
+  if (!gotCollectionEntry) {
+    throw new Error('CollectionEntry not found');
+  }
+  // update collectionEntry
+  // fieldDetails is an object with the following shape:
+  // {
+  //   'name' : 'value',
+  // }
+  const updatedCollectionEntry = await gotCollectionEntry.update({
+    fields: gotCollectionEntry.fields.map((field) => {
+      if (fieldDetails[field[0]]) {
+        return [field[0], fieldDetails[field[0]]];
+      }
+      return field;
+    }),
+  });
+  return updatedCollectionEntry;
+};
+
 const CollectionEntriesService = {
   createCollectionEntry,
   getCollectionEntries,
   addFieldToCollectionEntry,
   updateFieldName,
+  addValuesToFieldsInCollectionEntry,
 };
 module.exports = CollectionEntriesService;
