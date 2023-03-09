@@ -9,20 +9,6 @@ const createContentType = async (contentTypeDetails) => {
   return createdContentType;
 };
 
-const addContentTypeField = async (id) => {
-  const gotContentType = await db.ContentType.findOne({
-    where: {
-      id,
-    },
-  });
-  if (!gotContentType) {
-    throw new Error('ContentType not found');
-  }
-  const updatedContentType = await gotContentType.update({
-    fields: [],
-  });
-  return updatedContentType;
-};
 const updateContentTypeFieldArray = async (id, fieldName) => {
   const gotContentType = await db.ContentType.findOne({
     where: {
@@ -41,9 +27,26 @@ const updateContentTypeFieldArray = async (id, fieldName) => {
   return updatedContentType;
 };
 
+const deleteFromContentTypeFieldArray = async (id, fieldName) => {
+  const gotContentType = await db.ContentType.findOne({
+    where: {
+      id,
+    },
+  });
+  if (!gotContentType) {
+    throw new Error('ContentType not found');
+  }
+  if (!gotContentType.fields.some((field) => field[0] === fieldName)) {
+    throw new Error('Field does not exist');
+  }
+  const updatedContentType = await gotContentType.update({
+    fields: gotContentType.fields.filter((field) => field[0] !== fieldName),
+  });
+  return updatedContentType;
+};
 const ContentTypeService = {
   createContentType,
-  addContentTypeField,
   updateContentTypeFieldArray,
+  deleteFromContentTypeFieldArray,
 };
 module.exports = ContentTypeService;

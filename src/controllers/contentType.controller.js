@@ -8,12 +8,6 @@ const createContentType = async (req, res) => {
   });
   res.status(201).send(contentType);
 };
-const addContentTypeField = async (req, res) => {
-  const { id } = req.params;
-  const contentType = await ContentTypeService.addContentTypeField(id);
-  res.status(201).send(contentType);
-};
-
 const updateContentTypeFieldArray = async (req, res) => {
   const { id } = req.params;
   const { fieldName } = req.body;
@@ -27,10 +21,21 @@ const updateContentTypeFieldArray = async (req, res) => {
     res.status(400).send({ message: error.message });
   }
 };
+const deleteFromContentTypeFieldArray = async (req, res) => {
+  const { id } = req.params;
+  const { fieldName } = req.body;
+  try {
+    const contentType =
+      await ContentTypeService.deleteFromContentTypeFieldArray(id, fieldName);
+    res.status(201).send(contentType);
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+  }
+};
 
 const ContentTypeController = {
   createContentType,
-  addContentTypeField,
   updateContentTypeFieldArray,
+  deleteFromContentTypeFieldArray,
 };
 module.exports = ContentTypeController;
