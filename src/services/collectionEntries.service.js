@@ -1,20 +1,25 @@
 const db = require('../database/models');
 
-const createCollectionEntry = async (contentTypeId) => {
+const createCollectionEntry = async (email, contentTypeId) => {
   return await db.CollectionEntries.create({
     fields: [],
-    email: null,
+    email,
     contentTypeId,
   });
 };
-const getCollectionEntries = () => {
-  return db.CollectionEntries.findAll();
+const getCollectionEntries = (email) => {
+  return db.CollectionEntries.findAll({
+    where: {
+      email,
+    },
+  });
 };
 
-const addFieldToCollectionEntry = async (contentTypeId, fieldName) => {
+const addFieldToCollectionEntry = async (email, contentTypeId, fieldName) => {
   const gotCollectionEntry = await db.CollectionEntries.findOne({
     where: {
       contentTypeId,
+      email,
     },
   });
   if (!gotCollectionEntry) {
@@ -29,10 +34,16 @@ const addFieldToCollectionEntry = async (contentTypeId, fieldName) => {
   return updatedCollectionEntry;
 };
 
-const updateFieldName = async (contentTypeId, oldFieldName, newFieldName) => {
+const updateFieldName = async (
+  email,
+  contentTypeId,
+  oldFieldName,
+  newFieldName
+) => {
   const gotCollectionEntry = await db.CollectionEntries.findOne({
     where: {
       contentTypeId,
+      email,
     },
   });
   if (!gotCollectionEntry) {
@@ -57,6 +68,7 @@ const updateFieldName = async (contentTypeId, oldFieldName, newFieldName) => {
 //   'field2': 'value2',
 // }
 const addValuesToFieldsInCollectionEntry = async (
+  email,
   collectionEntryId,
   fieldDetails
 ) => {
@@ -64,6 +76,7 @@ const addValuesToFieldsInCollectionEntry = async (
   const gotCollectionEntry = await db.CollectionEntries.findOne({
     where: {
       id: collectionEntryId,
+      email,
     },
   });
   if (!gotCollectionEntry) {
@@ -88,10 +101,11 @@ const addValuesToFieldsInCollectionEntry = async (
   });
   return updatedCollectionEntry;
 };
-const deleteCollectionEntry = async (collectionEntryId) => {
+const deleteCollectionEntry = async (email, collectionEntryId) => {
   const gotCollectionEntry = await db.CollectionEntries.findOne({
     where: {
       id: collectionEntryId,
+      email,
     },
   });
   if (!gotCollectionEntry) {
@@ -105,11 +119,12 @@ const deleteCollectionEntry = async (collectionEntryId) => {
 //   'field1': 'value1',
 //   'field2': 'value2',
 // }
-const addNewCollectionEntry = async (contentTypeId, fieldDetails) => {
+const addNewCollectionEntry = async (email, contentTypeId, fieldDetails) => {
   // create a new collection entry with the given contentTypeId
-  const newCollectionEntry = await createCollectionEntry(contentTypeId);
+  const newCollectionEntry = await createCollectionEntry(email, contentTypeId);
   // add fields to the collection entry whcih are in the fieldDetails
   const updatedCollectionEntry = await addValuesToFieldsInCollectionEntry(
+    email,
     newCollectionEntry.id,
     fieldDetails
   );

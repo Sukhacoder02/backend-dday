@@ -5,7 +5,7 @@ const createContentType = async (req, res) => {
   try {
     const contentType = await ContentTypeService.createContentType({
       name,
-      email: null,
+      email: req.user,
     });
     res.status(201).send(contentType);
   } catch (error) {
@@ -17,6 +17,7 @@ const updateContentTypeFieldArray = async (req, res) => {
   const { fieldName } = req.body;
   try {
     const contentType = await ContentTypeService.updateContentTypeFieldArray(
+      req.user,
       id,
       fieldName
     );
@@ -30,7 +31,11 @@ const deleteFromContentTypeFieldArray = async (req, res) => {
   const { fieldName } = req.body;
   try {
     const contentType =
-      await ContentTypeService.deleteFromContentTypeFieldArray(id, fieldName);
+      await ContentTypeService.deleteFromContentTypeFieldArray(
+        req.user,
+        id,
+        fieldName
+      );
     res.status(201).send(contentType);
   } catch (error) {
     res.status(400).send({ message: error.message });
@@ -41,6 +46,7 @@ const updateFieldName = async (req, res) => {
   const { oldFieldName, newFieldName } = req.body;
   try {
     const contentType = await ContentTypeService.updateFieldName(
+      req.user,
       id,
       oldFieldName,
       newFieldName

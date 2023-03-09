@@ -6,6 +6,7 @@ const createContentType = async (contentTypeDetails) => {
   const gotContentType = await db.ContentType.findOne({
     where: {
       name: contentTypeDetails.name,
+      email: contentTypeDetails.email,
     },
   });
   if (gotContentType) {
@@ -16,14 +17,18 @@ const createContentType = async (contentTypeDetails) => {
     email: contentTypeDetails.email,
     fields: [],
   });
-  await CollectionEntriesService.createCollectionEntry(createdContentType.id);
+  await CollectionEntriesService.createCollectionEntry(
+    contentTypeDetails.email,
+    createdContentType.id
+  );
   return createdContentType;
 };
 
-const updateContentTypeFieldArray = async (id, fieldName) => {
+const updateContentTypeFieldArray = async (email, id, fieldName) => {
   const gotContentType = await db.ContentType.findOne({
     where: {
       id,
+      email,
     },
   });
   if (!gotContentType) {
@@ -37,16 +42,18 @@ const updateContentTypeFieldArray = async (id, fieldName) => {
   });
 
   await CollectionEntriesService.addFieldToCollectionEntry(
+    email,
     updatedContentType.id,
     fieldName
   );
   return updatedContentType;
 };
 
-const deleteFromContentTypeFieldArray = async (id, fieldName) => {
+const deleteFromContentTypeFieldArray = async (email, id, fieldName) => {
   const gotContentType = await db.ContentType.findOne({
     where: {
       id,
+      email,
     },
   });
   if (!gotContentType) {
@@ -62,10 +69,11 @@ const deleteFromContentTypeFieldArray = async (id, fieldName) => {
   return updatedContentType;
 };
 
-const updateFieldName = async (id, oldFieldName, newFieldName) => {
+const updateFieldName = async (email, id, oldFieldName, newFieldName) => {
   const gotContentType = await db.ContentType.findOne({
     where: {
       id,
+      email,
     },
   });
   if (!gotContentType) {
@@ -87,6 +95,7 @@ const updateFieldName = async (id, oldFieldName, newFieldName) => {
     }),
   });
   await CollectionEntriesService.updateFieldName(
+    email,
     updatedContentType.id,
     oldFieldName,
     newFieldName

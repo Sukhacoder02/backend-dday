@@ -1,8 +1,9 @@
 const CollectionEntriesService = require('../services/collectionEntries.service');
 
 const getCollectionEntries = async (req, res) => {
-  const collectionEntries =
-    await CollectionEntriesService.getCollectionEntries();
+  const collectionEntries = await CollectionEntriesService.getCollectionEntries(
+    req.user
+  );
   res.status(200).json(collectionEntries);
 };
 // edit collectionEntry
@@ -12,6 +13,7 @@ const addValuesToFieldsInCollectionEntry = async (req, res) => {
   try {
     const updatedCollectionEntry =
       await CollectionEntriesService.addValuesToFieldsInCollectionEntry(
+        req.user,
         id,
         fieldDetails
       );
@@ -24,7 +26,7 @@ const deleteCollectionEntry = async (req, res) => {
   const { id } = req.params;
   try {
     const deletedCollectionEntry =
-      await CollectionEntriesService.deleteCollectionEntry(id);
+      await CollectionEntriesService.deleteCollectionEntry(req.user, id);
     res.status(200).json(deletedCollectionEntry);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -36,6 +38,7 @@ const addNewCollectionEntry = async (req, res) => {
   try {
     const newCollectionEntry =
       await CollectionEntriesService.addNewCollectionEntry(
+        req.user,
         contentTypeId,
         fieldDetails
       );
