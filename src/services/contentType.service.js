@@ -16,6 +16,7 @@ const createContentType = async (contentTypeDetails) => {
     email: contentTypeDetails.email,
     fields: [],
   });
+  await CollectionEntriesService.createCollectionEntry(createdContentType.id);
   return createdContentType;
 };
 
@@ -34,6 +35,11 @@ const updateContentTypeFieldArray = async (id, fieldName) => {
   const updatedContentType = await gotContentType.update({
     fields: [...gotContentType.fields, [fieldName, 'Text']],
   });
+
+  await CollectionEntriesService.addFieldToCollectionEntry(
+    updatedContentType.id,
+    fieldName
+  );
   return updatedContentType;
 };
 
@@ -52,6 +58,7 @@ const deleteFromContentTypeFieldArray = async (id, fieldName) => {
   const updatedContentType = await gotContentType.update({
     fields: gotContentType.fields.filter((field) => field[0] !== fieldName),
   });
+
   return updatedContentType;
 };
 
@@ -64,8 +71,9 @@ const updateFieldName = async (id, oldFieldName, newFieldName) => {
   if (!gotContentType) {
     throw new Error('ContentType not found');
   }
+  console.log('Content-Type is found', gotContentType.name);
   if (!gotContentType.fields.some((field) => field[0] === oldFieldName)) {
-    throw new Error('Field does not exist');
+    throw new Error('Field does not exist in contentType');
   }
   if (gotContentType.fields.some((field) => field[0] === newFieldName)) {
     throw new Error('Field already exists');
@@ -78,6 +86,11 @@ const updateFieldName = async (id, oldFieldName, newFieldName) => {
       return field;
     }),
   });
+  await CollectionEntriesService.updateFieldName(
+    updatedContentType.id,
+    oldFieldName,
+    newFieldName
+  );
   return updatedContentType;
 };
 const ContentTypeService = {
