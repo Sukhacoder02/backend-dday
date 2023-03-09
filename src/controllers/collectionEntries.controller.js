@@ -19,9 +19,20 @@ const addValuesToFieldsInCollectionEntry = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+const deleteCollectionEntry = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deletedCollectionEntry =
+      await CollectionEntriesService.deleteCollectionEntry(id);
+    res.status(200).json(deletedCollectionEntry);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 const CollectionEntriesController = {
   getCollectionEntries,
   addValuesToFieldsInCollectionEntry,
+  deleteCollectionEntry,
 };
 
 module.exports = CollectionEntriesController;

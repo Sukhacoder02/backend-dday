@@ -9,4 +9,8 @@ collectionEntriesRouter.post(
   '/:id',
   CollectionEntriesController.addValuesToFieldsInCollectionEntry
 );
+collectionEntriesRouter.delete(
+  '/:id',
+  CollectionEntriesController.deleteCollectionEntry
+);
 module.exports = collectionEntriesRouter;

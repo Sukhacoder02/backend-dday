@@ -65,11 +65,6 @@ const addValuesToFieldsInCollectionEntry = async (
   if (!gotCollectionEntry) {
     throw new Error('CollectionEntry not found');
   }
-  // update collectionEntry
-  // fieldDetails is an object with the following shape:
-  // {
-  //   'name' : 'value',
-  // }
   const updatedCollectionEntry = await gotCollectionEntry.update({
     fields: gotCollectionEntry.fields.map((field) => {
       if (fieldDetails[field[0]]) {
@@ -80,6 +75,18 @@ const addValuesToFieldsInCollectionEntry = async (
   });
   return updatedCollectionEntry;
 };
+const deleteCollectionEntry = async (collectionEntryId) => {
+  const gotCollectionEntry = await db.CollectionEntries.findOne({
+    where: {
+      id: collectionEntryId,
+    },
+  });
+  if (!gotCollectionEntry) {
+    throw new Error('CollectionEntry not found');
+  }
+  await gotCollectionEntry.destroy();
+  return gotCollectionEntry;
+};
 
 const CollectionEntriesService = {
   createCollectionEntry,
@@ -87,5 +94,6 @@ const CollectionEntriesService = {
   addFieldToCollectionEntry,
   updateFieldName,
   addValuesToFieldsInCollectionEntry,
+  deleteCollectionEntry,
 };
 module.exports = CollectionEntriesService;
