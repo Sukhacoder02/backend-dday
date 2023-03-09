@@ -10,4 +10,8 @@ contentTypeRouter.delete(
   '/:id/fields/delete',
   ContentTypeController.deleteFromContentTypeFieldArray
 );
+contentTypeRouter.patch(
+  '/:id/fields/update',
+  ContentTypeController.updateFieldName
+);
 module.exports = contentTypeRouter;

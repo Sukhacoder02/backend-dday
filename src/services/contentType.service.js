@@ -44,9 +44,36 @@ const deleteFromContentTypeFieldArray = async (id, fieldName) => {
   });
   return updatedContentType;
 };
+
+const updateFieldName = async (id, oldFieldName, newFieldName) => {
+  const gotContentType = await db.ContentType.findOne({
+    where: {
+      id,
+    },
+  });
+  if (!gotContentType) {
+    throw new Error('ContentType not found');
+  }
+  if (!gotContentType.fields.some((field) => field[0] === oldFieldName)) {
+    throw new Error('Field does not exist');
+  }
+  if (gotContentType.fields.some((field) => field[0] === newFieldName)) {
+    throw new Error('Field already exists');
+  }
+  const updatedContentType = await gotContentType.update({
+    fields: gotContentType.fields.map((field) => {
+      if (field[0] === oldFieldName) {
+        return [newFieldName, field[1]];
+      }
+      return field;
+    }),
+  });
+  return updatedContentType;
+};
 const ContentTypeService = {
   createContentType,
   updateContentTypeFieldArray,
   deleteFromContentTypeFieldArray,
+  updateFieldName,
 };
 module.exports = ContentTypeService;
