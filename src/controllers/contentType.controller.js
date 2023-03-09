@@ -2,11 +2,15 @@ const ContentTypeService = require('../services/contentType.service');
 
 const createContentType = async (req, res) => {
   const { name } = req.body;
-  const contentType = await ContentTypeService.createContentType({
-    name,
-    email: null,
-  });
-  res.status(201).send(contentType);
+  try {
+    const contentType = await ContentTypeService.createContentType({
+      name,
+      email: null,
+    });
+    res.status(201).send(contentType);
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+  }
 };
 const updateContentTypeFieldArray = async (req, res) => {
   const { id } = req.params;
