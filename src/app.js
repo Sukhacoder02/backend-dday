@@ -1,15 +1,19 @@
-// require express
 const express = require('express');
-const port = 8000;
-const router = require('./routes/routes.js');
+const cors = require('cors');
+const PORT = 2222;
 
 const app = express();
 app.use(express.json());
+app.use(
+  cors({
+    origin: '*',
+  })
+);
 
 app.get('/', (req, res) => {
   res.send('Hello World! backend');
 });
 
-app.listen(port, () => {
+app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
