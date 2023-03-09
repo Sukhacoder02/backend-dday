@@ -9,7 +9,23 @@ const createContentType = async (contentTypeDetails) => {
   return createdContentType;
 };
 
+const addContentTypeField = async (id) => {
+  const gotContentType = await db.ContentType.findOne({
+    where: {
+      id,
+    },
+  });
+  if (!gotContentType) {
+    throw new Error('ContentType not found');
+  }
+  const updatedContentType = await gotContentType.update({
+    fields: [],
+  });
+  return updatedContentType;
+};
+
 const ContentTypeService = {
   createContentType,
+  addContentTypeField,
 };
 module.exports = ContentTypeService;
