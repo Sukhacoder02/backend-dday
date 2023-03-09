@@ -13,4 +13,8 @@ collectionEntriesRouter.delete(
   '/:id',
   CollectionEntriesController.deleteCollectionEntry
 );
+collectionEntriesRouter.post(
+  '/',
+  CollectionEntriesController.addNewCollectionEntry
+);
 module.exports = collectionEntriesRouter;
