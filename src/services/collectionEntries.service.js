@@ -1,7 +1,7 @@
 const db = require('../database/models');
 
-const createCollectionEntry = (contentTypeId) => {
-  return db.CollectionEntries.create({
+const createCollectionEntry = async (contentTypeId) => {
+  return await db.CollectionEntries.create({
     fields: [],
     email: null,
     contentTypeId,
@@ -51,7 +51,11 @@ const updateFieldName = async (contentTypeId, oldFieldName, newFieldName) => {
   });
   return updatedCollectionEntry;
 };
-
+// fieldDetails is of the form
+// {
+//   'field1': 'value1',
+//   'field2': 'value2',
+// }
 const addValuesToFieldsInCollectionEntry = async (
   collectionEntryId,
   fieldDetails
@@ -64,6 +68,15 @@ const addValuesToFieldsInCollectionEntry = async (
   });
   if (!gotCollectionEntry) {
     throw new Error('CollectionEntry not found');
+  }
+  console.log('Found collectionEntry with id: ', gotCollectionEntry.id);
+  // if the fields in gotCollectionEntry is empty array add all the fields
+  if (gotCollectionEntry.fields.length === 0) {
+    // update the found collectionEntry with fieldDetails got as the argument
+    const updatedCollectionEntry = await gotCollectionEntry.update({
+      fields: Object.keys(fieldDetails).map((key) => [key, fieldDetails[key]]),
+    });
+    return updatedCollectionEntry;
   }
   const updatedCollectionEntry = await gotCollectionEntry.update({
     fields: gotCollectionEntry.fields.map((field) => {
@@ -87,6 +100,21 @@ const deleteCollectionEntry = async (collectionEntryId) => {
   await gotCollectionEntry.destroy();
   return gotCollectionEntry;
 };
+// fieldDetails is of the form
+// {
+//   'field1': 'value1',
+//   'field2': 'value2',
+// }
+const addNewCollectionEntry = async (contentTypeId, fieldDetails) => {
+  // create a new collection entry with the given contentTypeId
+  const newCollectionEntry = await createCollectionEntry(contentTypeId);
+  // add fields to the collection entry whcih are in the fieldDetails
+  const updatedCollectionEntry = await addValuesToFieldsInCollectionEntry(
+    newCollectionEntry.id,
+    fieldDetails
+  );
+  return updatedCollectionEntry;
+};
 
 const CollectionEntriesService = {
   createCollectionEntry,
@@ -95,5 +123,6 @@ const CollectionEntriesService = {
   updateFieldName,
   addValuesToFieldsInCollectionEntry,
   deleteCollectionEntry,
+  addNewCollectionEntry,
 };
 module.exports = CollectionEntriesService;
