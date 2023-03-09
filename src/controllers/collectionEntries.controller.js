@@ -33,9 +33,6 @@ const deleteCollectionEntry = async (req, res) => {
 
 const addNewCollectionEntry = async (req, res) => {
   let { contentTypeId, fieldDetails } = req.body;
-  // convert contentTypeId to integer
-  contentTypeId = parseInt(contentTypeId);
-
   try {
     const newCollectionEntry =
       await CollectionEntriesService.addNewCollectionEntry(
