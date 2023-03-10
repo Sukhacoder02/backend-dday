@@ -9,6 +9,19 @@ const getAllContentTypes = async (req, res) => {
     res.status(400).send({ message: error.message });
   }
 };
+// implement getContentTypeById
+const getContentTypeById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const contentType = await ContentTypeService.getContentTypeById(
+      req.user,
+      id
+    );
+    res.status(200).send(contentType);
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+  }
+};
 const createContentType = async (req, res) => {
   const { name } = req.body;
   try {
@@ -72,5 +85,6 @@ const ContentTypeController = {
   deleteFromContentTypeFieldArray,
   updateFieldName,
   getAllContentTypes,
+  getContentTypeById,
 };
 module.exports = ContentTypeController;

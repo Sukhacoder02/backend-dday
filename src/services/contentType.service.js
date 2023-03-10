@@ -7,8 +7,22 @@ const getAllContentTypes = async (email) => {
     where: {
       email,
     },
+    attributes: ['name', 'id'],
   });
   return gotContentTypes;
+};
+// create getContentTypeById service
+const getContentTypeById = async (email, id) => {
+  const gotContentType = await db.ContentType.findOne({
+    where: {
+      id,
+      email,
+    },
+  });
+  if (!gotContentType) {
+    throw new Error('ContentType not found');
+  }
+  return gotContentType;
 };
 const createContentType = async (contentTypeDetails) => {
   // throw error if content type already exists
@@ -117,5 +131,6 @@ const ContentTypeService = {
   deleteFromContentTypeFieldArray,
   updateFieldName,
   getAllContentTypes,
+  getContentTypeById,
 };
 module.exports = ContentTypeService;

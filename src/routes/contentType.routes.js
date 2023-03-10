@@ -9,6 +9,13 @@ contentTypeRouter.get(
   validateToken(),
   ContentTypeController.getAllContentTypes
 );
+// implement getContentTypeById
+contentTypeRouter.get(
+  '/:id',
+  validateToken(),
+  validate(Schemas.idParamSchema, 'params'),
+  ContentTypeController.getContentTypeById
+);
 contentTypeRouter.post(
   '/',
   validateToken(),
