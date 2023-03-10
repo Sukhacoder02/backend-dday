@@ -16,14 +16,11 @@ const tokenValidator = () => async (req, res, next) => {
       throw new Error('No token provided');
     }
 
-    const response = await axios.get(
-      'http://localhost:1111/api/token/validate',
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axios.get('http://auth:1111/api/token/validate', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (response.status !== 200) {
       throw new HttpError('invalid token', 401);
     } else {

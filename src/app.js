@@ -15,7 +15,7 @@ app.use('/api/content-type', contentTypeRouter);
 app.use('/api/collection-entries', collectionEntriesRouter);
 
 app.get('/', (req, res) => {
-  res.send('Hello World! backend');
+  res.send('Hello World');
 });
 
 app.listen(PORT, () => {
