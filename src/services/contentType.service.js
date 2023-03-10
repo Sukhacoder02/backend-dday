@@ -1,6 +1,15 @@
 const db = require('../database/models');
 const CollectionEntriesService = require('./collectionEntries.service');
 
+// create getAllContentTypes service
+const getAllContentTypes = async (email) => {
+  const gotContentTypes = await db.ContentType.findAll({
+    where: {
+      email,
+    },
+  });
+  return gotContentTypes;
+};
 const createContentType = async (contentTypeDetails) => {
   // throw error if content type already exists
   const gotContentType = await db.ContentType.findOne({
@@ -107,5 +116,6 @@ const ContentTypeService = {
   updateContentTypeFieldArray,
   deleteFromContentTypeFieldArray,
   updateFieldName,
+  getAllContentTypes,
 };
 module.exports = ContentTypeService;

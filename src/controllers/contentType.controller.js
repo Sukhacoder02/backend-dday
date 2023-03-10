@@ -1,5 +1,14 @@
 const ContentTypeService = require('../services/contentType.service');
 
+// implement getAllContentType
+const getAllContentTypes = async (req, res) => {
+  try {
+    const contentTypes = await ContentTypeService.getAllContentTypes(req.user);
+    res.status(200).send(contentTypes);
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+  }
+};
 const createContentType = async (req, res) => {
   const { name } = req.body;
   try {
@@ -62,5 +71,6 @@ const ContentTypeController = {
   updateContentTypeFieldArray,
   deleteFromContentTypeFieldArray,
   updateFieldName,
+  getAllContentTypes,
 };
 module.exports = ContentTypeController;

@@ -3,6 +3,12 @@ const ContentTypeController = require('../controllers/contentType.controller');
 const validate = require('../middlewares/ContentType');
 const Schemas = require('../middlewares/ContentType/schemas.validator');
 const validateToken = require('../middlewares/Auth');
+
+contentTypeRouter.get(
+  '/',
+  validateToken(),
+  ContentTypeController.getAllContentTypes
+);
 contentTypeRouter.post(
   '/',
   validateToken(),
