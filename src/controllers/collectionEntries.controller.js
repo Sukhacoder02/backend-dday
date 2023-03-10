@@ -6,6 +6,20 @@ const getCollectionEntries = async (req, res) => {
   );
   res.status(200).json(collectionEntries);
 };
+// implement getCollectionEntry with specific contentTypeId
+const getCollectionEntry = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const collectionEntries = await CollectionEntriesService.getCollectionEntry(
+      req.user,
+      id
+    );
+    res.status(200).json(collectionEntries);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 // edit collectionEntry
 const addValuesToFieldsInCollectionEntry = async (req, res) => {
   const { id } = req.params;
@@ -52,6 +66,7 @@ const CollectionEntriesController = {
   addValuesToFieldsInCollectionEntry,
   deleteCollectionEntry,
   addNewCollectionEntry,
+  getCollectionEntry,
 };
 
 module.exports = CollectionEntriesController;

@@ -8,6 +8,13 @@ collectionEntriesRouter.get(
   validateToken(),
   CollectionEntriesController.getCollectionEntries
 );
+// getCollectionEntry with id of content-type
+collectionEntriesRouter.get(
+  '/:id',
+  validateToken(),
+  validate(Schemas.idParamSchema, 'params'),
+  CollectionEntriesController.getCollectionEntry
+);
 collectionEntriesRouter.post(
   '/:id',
   validateToken(),

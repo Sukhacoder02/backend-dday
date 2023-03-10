@@ -15,6 +15,20 @@ const getCollectionEntries = (email) => {
   });
 };
 
+// implement getCollectionEntry with specific contentTypeId
+const getCollectionEntry = async (email, contentTypeId) => {
+  const gotCollectionEntry = await db.CollectionEntries.findAll({
+    where: {
+      contentTypeId,
+      email,
+    },
+  });
+  if (!gotCollectionEntry) {
+    throw new Error('CollectionEntry not found');
+  }
+  return gotCollectionEntry;
+};
+
 const addFieldToCollectionEntry = async (email, contentTypeId, fieldName) => {
   const gotCollectionEntry = await db.CollectionEntries.findOne({
     where: {
@@ -139,5 +153,6 @@ const CollectionEntriesService = {
   addValuesToFieldsInCollectionEntry,
   deleteCollectionEntry,
   addNewCollectionEntry,
+  getCollectionEntry,
 };
 module.exports = CollectionEntriesService;
