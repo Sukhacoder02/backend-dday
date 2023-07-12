@@ -16,7 +16,7 @@ const tokenValidator = () => async (req, res, next) => {
       throw new Error('No token provided');
     }
 
-    const response = await axios.get('http://auth:1111/api/token/validate', {
+    const response = await axios.get(`http://${process.env.AUTH_SERVICE_HOST || 'localhost'}:${process.env.AUTH_SERVICE_PORT}/api/token/validate`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

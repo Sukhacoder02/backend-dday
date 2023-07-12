@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const PORT = 2222;
+const dotenv = require('dotenv');
+dotenv.config();
+const PORT = process.env.PORT || 2222;
 const contentTypeRouter = require('./routes/contentType.routes');
 const collectionEntriesRouter = require('./routes/collectionEntries.routes');
 
