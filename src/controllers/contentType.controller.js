@@ -10,12 +10,12 @@ const getAllContentTypes = async (req, res) => {
   }
 };
 // implement getContentTypeById
-const getContentTypeById = async (req, res) => {
-  const { id } = req.params;
+const getContentTypeByName = async (req, res) => {
+  const { name } = req.params;
   try {
-    const contentType = await ContentTypeService.getContentTypeById(
+    const contentType = await ContentTypeService.getContentTypeByName(
       req.user,
-      id
+      name
     );
     res.status(200).send(contentType);
   } catch (error) {
@@ -25,11 +25,11 @@ const getContentTypeById = async (req, res) => {
 const createContentType = async (req, res) => {
   const { name } = req.body;
   try {
-    const contentType = await ContentTypeService.createContentType({
+    await ContentTypeService.createContentType({
       name,
       email: req.user,
     });
-    res.status(201).send(contentType);
+    res.status(201).send({ message: 'Content-Type created successfully' });
   } catch (error) {
     res.status(400).send({ message: error.message });
   }
@@ -85,6 +85,6 @@ const ContentTypeController = {
   deleteFromContentTypeFieldArray,
   updateFieldName,
   getAllContentTypes,
-  getContentTypeById,
+  getContentTypeByName,
 };
 module.exports = ContentTypeController;

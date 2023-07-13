@@ -1,5 +1,7 @@
 const db = require('../database/models');
 const CollectionEntriesService = require('./collectionEntries.service');
+const { attributes, getContentTypeOrNotFound } = require('../utils/Constants/Database')
+const Queries = require('../utils/Constants/Database/Queries')
 
 // create getAllContentTypes service
 const getAllContentTypes = async (email) => {
@@ -7,39 +9,33 @@ const getAllContentTypes = async (email) => {
   return allContentTypes;
 };
 // create getContentTypeById service
-const getContentTypeById = async (email, id) => {
-  const gotContentType = await db.ContentType.findOne({
-    where: {
-      id,
-      email,
-    },
-  });
-  if (!gotContentType) {
-    throw new Error('ContentType not found');
-  }
-  return gotContentType;
+const getContentTypeByName = async (email, name) => {
+  await getContentTypeOrNotFound(name);
+  // get all columns of the table
+  const query = Queries.GET_ALL_COLUMNS(name);
+  let result = await db.sequelize.query(Queries.GET_ALL_COLUMNS(name));
+  result = result[0];
+  return result;
 };
 const createContentType = async (contentTypeDetails) => {
   // throw error if content type already exists
-  const gotContentType = await db.ContentType.findOne({
+  const gotTable = await db.GetAllTables.findOne({
     where: {
-      name: contentTypeDetails.name,
-      email: contentTypeDetails.email,
+      table_name: contentTypeDetails.name,
     },
+    attributes
   });
-  if (gotContentType) {
-    throw new Error('ContentType already exists');
+  if (gotTable) {
+    throw new Error('Content-Type already exists');
   }
-  const createdContentType = await db.ContentType.create({
-    name: contentTypeDetails.name,
-    email: contentTypeDetails.email,
-    fields: [],
+  // create a table with name using queryInterface with just id column
+  await db.sequelize.queryInterface.createTable(contentTypeDetails.name, {
+    id: {
+      type: db.Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    }
   });
-  await CollectionEntriesService.createCollectionEntry(
-    contentTypeDetails.email,
-    createdContentType.id
-  );
-  return createdContentType;
 };
 
 const updateContentTypeFieldArray = async (email, id, fieldName) => {
@@ -126,6 +122,6 @@ const ContentTypeService = {
   deleteFromContentTypeFieldArray,
   updateFieldName,
   getAllContentTypes,
-  getContentTypeById,
+  getContentTypeByName,
 };
 module.exports = ContentTypeService;
