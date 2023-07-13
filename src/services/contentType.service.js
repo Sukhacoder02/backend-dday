@@ -3,13 +3,8 @@ const CollectionEntriesService = require('./collectionEntries.service');
 
 // create getAllContentTypes service
 const getAllContentTypes = async (email) => {
-  const gotContentTypes = await db.ContentType.findAll({
-    where: {
-      email,
-    },
-    attributes: ['name', 'id'],
-  });
-  return gotContentTypes;
+  const allContentTypes = await db.GetAllTables.FindAll();
+  return allContentTypes;
 };
 // create getContentTypeById service
 const getContentTypeById = async (email, id) => {
