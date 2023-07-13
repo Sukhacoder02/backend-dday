@@ -51,24 +51,13 @@ const addFieldToContentType = async (email, name, fieldName) => {
   });
 };
 
-const deleteFromContentTypeFieldArray = async (email, id, fieldName) => {
-  const gotContentType = await db.ContentType.findOne({
-    where: {
-      id,
-      email,
-    },
-  });
-  if (!gotContentType) {
-    throw new Error('ContentType not found');
-  }
-  if (!gotContentType.fields.some((field) => field[0] === fieldName)) {
+const deleteFieldFromContentType = async (email, name, fieldName) => {
+  await getContentTypeOrNotFound(name);
+  const gotContentType = await ContentTypeService.getContentTypeByName(email, name);
+  if (!gotContentType.some((column) => column.column_name === fieldName)) {
     throw new Error('Field does not exist');
   }
-  const updatedContentType = await gotContentType.update({
-    fields: gotContentType.fields.filter((field) => field[0] !== fieldName),
-  });
-
-  return updatedContentType;
+  await db.sequelize.queryInterface.removeColumn(name, fieldName);
 };
 
 const updateFieldName = async (email, name, oldFieldName, newFieldName) => {
@@ -86,7 +75,7 @@ const updateFieldName = async (email, name, oldFieldName, newFieldName) => {
 const ContentTypeService = {
   createContentType,
   addFieldToContentType,
-  deleteFromContentTypeFieldArray,
+  deleteFieldFromContentType,
   updateFieldName,
   getAllContentTypes,
   getContentTypeByName,

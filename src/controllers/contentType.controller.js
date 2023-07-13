@@ -49,16 +49,15 @@ const updateContentTypeFieldArray = async (req, res) => {
   }
 };
 const deleteFromContentTypeFieldArray = async (req, res) => {
-  const { id } = req.params;
+  const { name } = req.params;
   const { fieldName } = req.body;
   try {
-    const contentType =
-      await ContentTypeService.deleteFromContentTypeFieldArray(
-        req.user,
-        id,
-        fieldName
-      );
-    res.status(201).send(contentType);
+    await ContentTypeService.deleteFieldFromContentType(
+      req.user,
+      name,
+      fieldName
+    );
+    res.status(201).send({ message: 'Field deleted successfully' });
   } catch (error) {
     res.status(400).send({ error: error.message });
   }
@@ -67,7 +66,7 @@ const updateFieldName = async (req, res) => {
   const { name } = req.params;
   const { oldFieldName, newFieldName } = req.body;
   try {
-    const contentType = await ContentTypeService.updateFieldName(
+    await ContentTypeService.updateFieldName(
       req.user,
       name,
       oldFieldName,
