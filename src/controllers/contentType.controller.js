@@ -48,7 +48,7 @@ const updateContentTypeFieldArray = async (req, res) => {
     res.status(400).send({ error: error.message });
   }
 };
-const deleteFromContentTypeFieldArray = async (req, res) => {
+const deleteFieldFromContentType = async (req, res) => {
   const { name } = req.params;
   const { fieldName } = req.body;
   try {
@@ -78,12 +78,28 @@ const updateFieldName = async (req, res) => {
   }
 };
 
+const updateContentTypeName = async (req, res) => {
+  const oldName = req.params.name;
+  const newName = req.body.fieldName;
+  try {
+    await ContentTypeService.updateContentTypeName(
+      req.user,
+      oldName,
+      newName
+    );
+    res.status(201).send({ message: 'Content-Type name updated successfully' });
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+};
+
 const ContentTypeController = {
   createContentType,
   updateContentTypeFieldArray,
-  deleteFromContentTypeFieldArray,
+  deleteFieldFromContentType,
   updateFieldName,
   getAllContentTypes,
   getContentTypeByName,
+  updateContentTypeName
 };
 module.exports = ContentTypeController;

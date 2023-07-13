@@ -43,4 +43,11 @@ contentTypeRouter.patch(
   validate(Schemas.updateFieldNameBodySchema, 'body'),
   ContentTypeController.updateFieldName
 );
+contentTypeRouter.patch(
+  '/:name/update',
+  validateToken(),
+  validate(Schemas.nameSchema, 'params'),
+  validate(Schemas.fieldNameBodySchema, 'body'),
+  ContentTypeController.updateContentTypeName
+)
 module.exports = contentTypeRouter;

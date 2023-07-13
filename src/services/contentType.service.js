@@ -36,6 +36,7 @@ const createContentType = async (contentTypeDetails) => {
       autoIncrement: true,
     }
   });
+  await ContentTypeService.deleteFieldFromContentType(contentTypeDetails.email, contentTypeDetails.name, 'id');
 };
 
 const addFieldToContentType = async (email, name, fieldName) => {
@@ -72,6 +73,11 @@ const updateFieldName = async (email, name, oldFieldName, newFieldName) => {
   }
   await db.sequelize.queryInterface.renameColumn(name, oldFieldName, newFieldName);
 };
+
+const updateContentTypeName = async (email, oldName, newName) => {
+  await getContentTypeOrNotFound(oldName);
+  await db.sequelize.queryInterface.renameTable(oldName, newName);
+};
 const ContentTypeService = {
   createContentType,
   addFieldToContentType,
@@ -79,5 +85,6 @@ const ContentTypeService = {
   updateFieldName,
   getAllContentTypes,
   getContentTypeByName,
+  updateContentTypeName
 };
 module.exports = ContentTypeService;
