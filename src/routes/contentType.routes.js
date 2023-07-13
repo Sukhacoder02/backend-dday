@@ -23,9 +23,9 @@ contentTypeRouter.post(
   ContentTypeController.createContentType
 );
 contentTypeRouter.post(
-  '/:id/fields/add',
+  '/:name/fields/add',
   validateToken(),
-  validate(Schemas.idParamSchema, 'params'),
+  validate(Schemas.nameSchema, 'params'),
   validate(Schemas.fieldNameBodySchema, 'body'),
   ContentTypeController.updateContentTypeFieldArray
 );

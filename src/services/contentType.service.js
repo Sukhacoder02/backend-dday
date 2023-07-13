@@ -38,29 +38,17 @@ const createContentType = async (contentTypeDetails) => {
   });
 };
 
-const updateContentTypeFieldArray = async (email, id, fieldName) => {
-  const gotContentType = await db.ContentType.findOne({
-    where: {
-      id,
-      email,
-    },
-  });
-  if (!gotContentType) {
-    throw new Error('ContentType not found');
-  }
-  if (gotContentType.fields.some((field) => field[0] === fieldName)) {
+const addFieldToContentType = async (email, name, fieldName) => {
+  await getContentTypeOrNotFound(name);
+  const gotContentType = await ContentTypeService.getContentTypeByName(email, name);
+  const alreadyExists = gotContentType.some((column) => column.column_name === fieldName);
+  if (alreadyExists) {
     throw new Error('Field already exists');
   }
-  const updatedContentType = await gotContentType.update({
-    fields: [...gotContentType.fields, [fieldName, 'Text']],
+  // add new column to the table with name 'name'
+  await db.sequelize.queryInterface.addColumn(name, fieldName, {
+    type: db.Sequelize.STRING,
   });
-
-  await CollectionEntriesService.addFieldToCollectionEntry(
-    email,
-    updatedContentType.id,
-    fieldName
-  );
-  return updatedContentType;
 };
 
 const deleteFromContentTypeFieldArray = async (email, id, fieldName) => {
@@ -118,7 +106,7 @@ const updateFieldName = async (email, id, oldFieldName, newFieldName) => {
 };
 const ContentTypeService = {
   createContentType,
-  updateContentTypeFieldArray,
+  addFieldToContentType,
   deleteFromContentTypeFieldArray,
   updateFieldName,
   getAllContentTypes,

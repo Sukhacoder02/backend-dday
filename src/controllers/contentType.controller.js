@@ -6,7 +6,7 @@ const getAllContentTypes = async (req, res) => {
     const contentTypes = await ContentTypeService.getAllContentTypes(req.user);
     res.status(200).send(contentTypes);
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(400).send({ error: error.message });
   }
 };
 // implement getContentTypeById
@@ -19,7 +19,7 @@ const getContentTypeByName = async (req, res) => {
     );
     res.status(200).send(contentType);
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(400).send({ error: error.message });
   }
 };
 const createContentType = async (req, res) => {
@@ -31,21 +31,21 @@ const createContentType = async (req, res) => {
     });
     res.status(201).send({ message: 'Content-Type created successfully' });
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(400).send({ error: error.message });
   }
 };
 const updateContentTypeFieldArray = async (req, res) => {
-  const { id } = req.params;
+  const { name } = req.params;
   const { fieldName } = req.body;
   try {
-    const contentType = await ContentTypeService.updateContentTypeFieldArray(
+    await ContentTypeService.addFieldToContentType(
       req.user,
-      id,
+      name,
       fieldName
     );
-    res.status(201).send(contentType);
+    res.status(201).send({ message: 'Field added successfully' });
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(400).send({ error: error.message });
   }
 };
 const deleteFromContentTypeFieldArray = async (req, res) => {
@@ -60,7 +60,7 @@ const deleteFromContentTypeFieldArray = async (req, res) => {
       );
     res.status(201).send(contentType);
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(400).send({ error: error.message });
   }
 };
 const updateFieldName = async (req, res) => {
@@ -75,7 +75,7 @@ const updateFieldName = async (req, res) => {
     );
     res.status(201).send(contentType);
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(400).send({ error: error.message });
   }
 };
 
