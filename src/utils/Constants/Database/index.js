@@ -9,6 +9,8 @@ const getContentTypeOrNotFound = async (contentTypeName) => {
     },
     attributes,
   });
-  return contentType;
+  if (!contentType) {
+    throw new Error('Content-Type not found');
+  }
 };
 module.exports = { attributes, getContentTypeOrNotFound };
