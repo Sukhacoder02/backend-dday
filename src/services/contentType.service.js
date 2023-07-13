@@ -71,38 +71,17 @@ const deleteFromContentTypeFieldArray = async (email, id, fieldName) => {
   return updatedContentType;
 };
 
-const updateFieldName = async (email, id, oldFieldName, newFieldName) => {
-  const gotContentType = await db.ContentType.findOne({
-    where: {
-      id,
-      email,
-    },
-  });
-  if (!gotContentType) {
-    throw new Error('ContentType not found');
-  }
-  console.log('Content-Type is found', gotContentType.name);
-  if (!gotContentType.fields.some((field) => field[0] === oldFieldName)) {
+const updateFieldName = async (email, name, oldFieldName, newFieldName) => {
+  await getContentTypeOrNotFound(name);
+  const gotContentType = await ContentTypeService.getContentTypeByName(email, name);
+
+  if (!gotContentType.some((column) => column.column_name === oldFieldName)) {
     throw new Error('Field does not exist in contentType');
   }
-  if (gotContentType.fields.some((field) => field[0] === newFieldName)) {
+  if (gotContentType.some((column) => column.column_name === newFieldName)) {
     throw new Error('Field already exists');
   }
-  const updatedContentType = await gotContentType.update({
-    fields: gotContentType.fields.map((field) => {
-      if (field[0] === oldFieldName) {
-        return [newFieldName, field[1]];
-      }
-      return field;
-    }),
-  });
-  await CollectionEntriesService.updateFieldName(
-    email,
-    updatedContentType.id,
-    oldFieldName,
-    newFieldName
-  );
-  return updatedContentType;
+  await db.sequelize.queryInterface.renameColumn(name, oldFieldName, newFieldName);
 };
 const ContentTypeService = {
   createContentType,

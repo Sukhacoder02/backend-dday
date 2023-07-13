@@ -64,16 +64,16 @@ const deleteFromContentTypeFieldArray = async (req, res) => {
   }
 };
 const updateFieldName = async (req, res) => {
-  const { id } = req.params;
+  const { name } = req.params;
   const { oldFieldName, newFieldName } = req.body;
   try {
     const contentType = await ContentTypeService.updateFieldName(
       req.user,
-      id,
+      name,
       oldFieldName,
       newFieldName
     );
-    res.status(201).send(contentType);
+    res.status(201).send({ message: 'Field name updated successfully' });
   } catch (error) {
     res.status(400).send({ error: error.message });
   }

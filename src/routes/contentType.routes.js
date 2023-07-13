@@ -37,9 +37,9 @@ contentTypeRouter.delete(
   ContentTypeController.deleteFromContentTypeFieldArray
 );
 contentTypeRouter.patch(
-  '/:id/fields/update',
+  '/:name/fields/update',
   validateToken(),
-  validate(Schemas.idParamSchema, 'params'),
+  validate(Schemas.nameSchema, 'params'),
   validate(Schemas.updateFieldNameBodySchema, 'body'),
   ContentTypeController.updateFieldName
 );
