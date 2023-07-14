@@ -1,10 +1,7 @@
 const Joi = require('joi');
 
-const idParamSchema = Joi.object({
-  id: Joi.string()
-    .alphanum()
-    .required()
-    .regex(/^[0-9]*$/),
+const nameParamSchema = Joi.object({
+  name: Joi.string()
 });
 
 const fieldDetailsBodySchema = Joi.object({
@@ -17,7 +14,7 @@ const addNewCollectionEntrySchema = Joi.object({
 });
 
 const Schemas = {
-  idParamSchema,
+  nameParamSchema,
   fieldDetailsBodySchema,
   addNewCollectionEntrySchema,
 };
