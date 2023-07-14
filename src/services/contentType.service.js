@@ -36,7 +36,6 @@ const createContentType = async (contentTypeDetails) => {
       autoIncrement: true,
     }
   });
-  await ContentTypeService.deleteFieldFromContentType(contentTypeDetails.email, contentTypeDetails.name, 'id');
 };
 
 const addFieldToContentType = async (email, name, fieldName) => {
