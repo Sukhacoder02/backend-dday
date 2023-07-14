@@ -4,5 +4,8 @@ module.exports = {
   },
   GET_COUNT: (tableName) => {
     return `SELECT COUNT(*) FROM "${tableName}";`;
+  },
+  GET_ALL_RECORDS: (tableName) => {
+    return `SELECT * FROM "${tableName}";`;
   }
 };
