@@ -7,5 +7,10 @@ module.exports = {
   },
   GET_ALL_RECORDS: (tableName) => {
     return `SELECT * FROM "${tableName}";`;
+  },
+  INSERT_INTO: (tableName, fieldDetails) => {
+    const columns = '"' + Object.keys(fieldDetails).toString().split(',').join('","') + '"';
+    const values = "'" + Object.values(fieldDetails).toString().split(',').join("','") + "'";
+    return `INSERT INTO "${tableName}" (${columns}) VALUES (${values});`;
   }
-};
+}
