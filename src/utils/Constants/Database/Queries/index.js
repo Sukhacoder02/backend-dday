@@ -12,5 +12,13 @@ module.exports = {
     const columns = '"' + Object.keys(fieldDetails).toString().split(',').join('","') + '"';
     const values = "'" + Object.values(fieldDetails).toString().split(',').join("','") + "'";
     return `INSERT INTO "${tableName}" (${columns}) VALUES (${values});`;
+  },
+  DELETE_RECORD: (tableName, id) => {
+    return `DELETE FROM "${tableName}" WHERE id = ${id};`;
+  },
+  UPDATE_RECORD: (tableName, id, fieldDetails) => {
+    const columns = '"' + Object.keys(fieldDetails).toString().split(',').join('","') + '"';
+    const values = "'" + Object.values(fieldDetails).toString().split(',').join("','") + "'";
+    return `UPDATE "${tableName}" SET (${columns}) = (${values}) WHERE id = ${id};`;
   }
 }
