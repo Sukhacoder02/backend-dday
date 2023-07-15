@@ -1,6 +1,6 @@
 const collectionEntriesRouter = require('express').Router();
 const CollectionEntriesController = require('../controllers/collectionEntries.controller');
-const validate = require('../middlewares/CollectionEntries');
+const { validate, validateFieldsForCollectionEntry } = require('../middlewares/CollectionEntries');
 const Schemas = require('../middlewares/CollectionEntries/schemas.validator');
 const validateToken = require('../middlewares/Auth');
 collectionEntriesRouter.get(
@@ -8,30 +8,31 @@ collectionEntriesRouter.get(
   validateToken(),
   CollectionEntriesController.getCollectionEntries
 );
-// getCollectionEntry with id of content-type
+// getCollectionEntry with name of Content-Type
 collectionEntriesRouter.get(
-  '/:id',
+  '/:name',
   validateToken(),
-  validate(Schemas.idParamSchema, 'params'),
+  validate(Schemas.nameParamSchema, 'params'),
   CollectionEntriesController.getCollectionEntry
 );
-collectionEntriesRouter.post(
-  '/:id',
+collectionEntriesRouter.patch(
+  '/:name/:id/edit',
   validateToken(),
-  validate(Schemas.idParamSchema, 'params'),
-  validate(Schemas.fieldDetailsBodySchema, 'body'),
+  validate(Schemas.deleteCollectionEntrySchema, 'params'),
+  validateFieldsForCollectionEntry('body', false),
   CollectionEntriesController.addValuesToFieldsInCollectionEntry
 );
 collectionEntriesRouter.delete(
-  '/:id',
+  '/:name/:id/delete',
   validateToken(),
-  validate(Schemas.idParamSchema, 'params'),
+  validate(Schemas.deleteCollectionEntrySchema, 'params'),
   CollectionEntriesController.deleteCollectionEntry
 );
 collectionEntriesRouter.post(
-  '/',
+  '/:name/addNewCollectionEntry',
   validateToken(),
-  validate(Schemas.addNewCollectionEntrySchema, 'body'),
+  validate(Schemas.nameParamSchema, 'params'),
+  validateFieldsForCollectionEntry('body', true),
   CollectionEntriesController.addNewCollectionEntry
 );
 module.exports = collectionEntriesRouter;

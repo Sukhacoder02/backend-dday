@@ -1,4 +1,7 @@
 const db = require('../database/models');
+const { getContentTypeOrNotFound } = require('../utils/Constants/Database');
+const Queries = require('../utils/Constants/Database/Queries');
+
 
 const createCollectionEntry = async (email, contentTypeId) => {
   return await db.CollectionEntries.create({
@@ -16,17 +19,10 @@ const getCollectionEntries = (email) => {
 };
 
 // implement getCollectionEntry with specific contentTypeId
-const getCollectionEntry = async (email, contentTypeId) => {
-  const gotCollectionEntry = await db.CollectionEntries.findAll({
-    where: {
-      contentTypeId,
-      email,
-    },
-  });
-  if (!gotCollectionEntry) {
-    throw new Error('CollectionEntry not found');
-  }
-  return gotCollectionEntry;
+const getCollectionEntry = async (email, contentTypeName) => {
+  await getContentTypeOrNotFound(contentTypeName);
+  const allEntries = await db.sequelize.query(Queries.GET_ALL_RECORDS(contentTypeName));
+  return allEntries[0];
 };
 
 const addFieldToCollectionEntry = async (email, contentTypeId, fieldName) => {
@@ -81,68 +77,27 @@ const updateFieldName = async (
 //   'field1': 'value1',
 //   'field2': 'value2',
 // }
-const addValuesToFieldsInCollectionEntry = async (
+const editCollectionEntry = async (
   email,
+  contentTypeName,
   collectionEntryId,
   fieldDetails
 ) => {
-  // find collectionEntry
-  const gotCollectionEntry = await db.CollectionEntries.findOne({
-    where: {
-      id: collectionEntryId,
-      email,
-    },
-  });
-  if (!gotCollectionEntry) {
-    throw new Error('CollectionEntry not found');
-  }
-  console.log('Found collectionEntry with id: ', gotCollectionEntry.id);
-  // if the fields in gotCollectionEntry is empty array add all the fields
-  if (gotCollectionEntry.fields.length === 0) {
-    // update the found collectionEntry with fieldDetails got as the argument
-    const updatedCollectionEntry = await gotCollectionEntry.update({
-      fields: Object.keys(fieldDetails).map((key) => [key, fieldDetails[key]]),
-    });
-    return updatedCollectionEntry;
-  }
-  const updatedCollectionEntry = await gotCollectionEntry.update({
-    fields: gotCollectionEntry.fields.map((field) => {
-      if (fieldDetails[field[0]]) {
-        return [field[0], fieldDetails[field[0]]];
-      }
-      return field;
-    }),
-  });
-  return updatedCollectionEntry;
+  await getContentTypeOrNotFound(contentTypeName);
+  const query = Queries.UPDATE_RECORD(contentTypeName, collectionEntryId, fieldDetails);
+  await db.sequelize.query(query);
 };
-const deleteCollectionEntry = async (email, collectionEntryId) => {
-  const gotCollectionEntry = await db.CollectionEntries.findOne({
-    where: {
-      id: collectionEntryId,
-      email,
-    },
-  });
-  if (!gotCollectionEntry) {
-    throw new Error('CollectionEntry not found');
-  }
-  await gotCollectionEntry.destroy();
-  return gotCollectionEntry;
+const deleteCollectionEntry = async (email, contentTypeName, collectionEntryId) => {
+  await getContentTypeOrNotFound(contentTypeName);
+  const query = Queries.DELETE_RECORD(contentTypeName, collectionEntryId);
+  console.log(query);
+  await db.sequelize.query(query);
 };
-// fieldDetails is of the form
-// {
-//   'field1': 'value1',
-//   'field2': 'value2',
-// }
-const addNewCollectionEntry = async (email, contentTypeId, fieldDetails) => {
-  // create a new collection entry with the given contentTypeId
-  const newCollectionEntry = await createCollectionEntry(email, contentTypeId);
-  // add fields to the collection entry whcih are in the fieldDetails
-  const updatedCollectionEntry = await addValuesToFieldsInCollectionEntry(
-    email,
-    newCollectionEntry.id,
-    fieldDetails
-  );
-  return updatedCollectionEntry;
+
+const addNewCollectionEntry = async (email, contentTypeName, fieldDetails) => {
+  await getContentTypeOrNotFound(contentTypeName);
+  const query = Queries.INSERT_INTO(contentTypeName, fieldDetails);
+  await db.sequelize.query(query);
 };
 
 const CollectionEntriesService = {
@@ -150,7 +105,7 @@ const CollectionEntriesService = {
   getCollectionEntries,
   addFieldToCollectionEntry,
   updateFieldName,
-  addValuesToFieldsInCollectionEntry,
+  editCollectionEntry,
   deleteCollectionEntry,
   addNewCollectionEntry,
   getCollectionEntry,

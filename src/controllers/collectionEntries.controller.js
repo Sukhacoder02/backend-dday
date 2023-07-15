@@ -8,11 +8,11 @@ const getCollectionEntries = async (req, res) => {
 };
 // implement getCollectionEntry with specific contentTypeId
 const getCollectionEntry = async (req, res) => {
-  const { id } = req.params;
+  const { name } = req.params;
   try {
     const collectionEntries = await CollectionEntriesService.getCollectionEntry(
       req.user,
-      id
+      name
     );
     res.status(200).json(collectionEntries);
   } catch (error) {
@@ -22,41 +22,42 @@ const getCollectionEntry = async (req, res) => {
 
 // edit collectionEntry
 const addValuesToFieldsInCollectionEntry = async (req, res) => {
-  const { id } = req.params;
-  const { fieldDetails } = req.body;
+  const contentTypeName = req.params.name, collectionEntryId = req.params.id;
+
+  const fieldDetails = req.body;
   try {
-    const updatedCollectionEntry =
-      await CollectionEntriesService.addValuesToFieldsInCollectionEntry(
-        req.user,
-        id,
-        fieldDetails
-      );
-    res.status(200).json(updatedCollectionEntry);
+    await CollectionEntriesService.editCollectionEntry(
+      req.user,
+      contentTypeName,
+      collectionEntryId,
+      fieldDetails
+    );
+    res.status(200).json({ message: 'Collection-Entry updated successfully' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 const deleteCollectionEntry = async (req, res) => {
-  const { id } = req.params;
+  const contentTypeName = req.params.name;
+  const collectionEntryId = req.params.id;
   try {
-    const deletedCollectionEntry =
-      await CollectionEntriesService.deleteCollectionEntry(req.user, id);
-    res.status(200).json(deletedCollectionEntry);
+    await CollectionEntriesService.deleteCollectionEntry(req.user, contentTypeName, collectionEntryId);
+    res.status(200).json({ message: 'Collection-Entry deleted successfully' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
 const addNewCollectionEntry = async (req, res) => {
-  let { contentTypeId, fieldDetails } = req.body;
+  const contentTypeName = req.params.name;
+  const fieldDetails = req.body;
   try {
-    const newCollectionEntry =
-      await CollectionEntriesService.addNewCollectionEntry(
-        req.user,
-        contentTypeId,
-        fieldDetails
-      );
-    res.status(200).json(newCollectionEntry);
+    await CollectionEntriesService.addNewCollectionEntry(
+      req.user,
+      contentTypeName,
+      fieldDetails
+    );
+    res.status(200).json({ message: 'Collection-Entry added successfully' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
