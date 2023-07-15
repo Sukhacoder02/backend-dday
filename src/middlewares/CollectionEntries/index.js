@@ -8,9 +8,9 @@ const validate = (schema, data) => (req, res, next) => {
   next();
 };
 
-const validateFieldsForCollectionEntry = (data) => async (req, res, next) => {
+const validateFieldsForCollectionEntry = (data, required) => async (req, res, next) => {
   const contentTypeName = req.params.name;
-  const schema = await getSchemaForCollectionEntry(contentTypeName);
+  const schema = await getSchemaForCollectionEntry(contentTypeName, required);
   // validate schema
   const { error } = schema.validate(req[data]);
   if (error) {
